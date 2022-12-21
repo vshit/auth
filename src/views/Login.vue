@@ -34,6 +34,7 @@
                         size="large"
                         type="submit"
                         variant="elevated"
+                        @click="login"
                     >
                         Sign In
                     </v-btn>
@@ -45,36 +46,57 @@
 
 <script>
 export default {
-    data () {
+    data() {
         return {
-form: false,
-    email: null,
-    password: null,
-    loading: false,
-    show1: false,
-      show2: true,
-      password: 'Password',
-      rules: {
-        required: value => !!value || 'Required.',
-        min: v => v.length >= 8 || 'Min 8 characters',
-        emailMatch: () => (`The email and password you entered don't match`),
-        }
-    }},
-
-
-  methods: {
-    onSubmit () {
-      if (!this.form) return
-
-      this.loading = true
-
-      setTimeout(() => (this.loading = false), 2000)
+            form: false,
+            email: null,
+            password: null,
+            loading: false,
+            show1: false,
+            show2: true,
+            password: "Password",
+            rules: {
+                required: (value) => !!value || "Required.",
+                min: (v) => v.length >= 8 || "Min 8 characters",
+                emailMatch: () =>
+                    `The email and password you entered don't match`,
+            },
+        };
     },
-    required (v) {
-      return !!v || 'Field is required'
+    mounted() {
+    //     console.log('process.env.VUE_APP_FIREBASE_API_KEY');
+            console.log(process.env.VUE_APP_FIREBASE_API_KEY);
     },
 
-  },
+    methods: {
+        onSubmit() {
+            if (!this.form) return;
+
+            this.loading = true;
+
+            setTimeout  (() => (this.loading = false), 2000);
+        },
+        required(v) {
+            return !!v || "Field is required";
+        },
+        async login() {
+            if (this.password.length && this.email.length) {
+                const url =`https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${process.env.VUE_APP_FIREBASE_API_KEY}`
+                let options = {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        email: this.email,
+                        password: this.password,
+                        returnSecureToken: true,
+                    }),
+                };
+                const response = await fetch(url, options)
+            }
+        },
+    },
 };
 </script>
 
