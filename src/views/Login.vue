@@ -64,8 +64,8 @@ export default {
         };
     },
     mounted() {
-    //     console.log('process.env.VUE_APP_FIREBASE_API_KEY');
-            console.log(process.env.VUE_APP_FIREBASE_API_KEY);
+        //     console.log('process.env.VUE_APP_FIREBASE_API_KEY');
+        console.log(process.env.VUE_APP_FIREBASE_API_KEY);
     },
 
     methods: {
@@ -74,14 +74,14 @@ export default {
 
             this.loading = true;
 
-            setTimeout  (() => (this.loading = false), 2000);
+            setTimeout(() => (this.loading = false), 2000);
         },
         required(v) {
             return !!v || "Field is required";
         },
         async login() {
             if (this.password.length && this.email.length) {
-                const url =`https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${process.env.VUE_APP_FIREBASE_API_KEY}`
+                const url = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${process.env.VUE_APP_FIREBASE_API_KEY}`;
                 let options = {
                     method: "POST",
                     headers: {
@@ -93,7 +93,17 @@ export default {
                         returnSecureToken: true,
                     }),
                 };
-                const response = await fetch(url, options)
+                const response = await fetch(url, options);
+                const res = await response.json();
+                console.log(res);
+                if (response.ok) {
+                    this.$router.push({ name: "Main" });
+                } else {
+                    this.$notify({
+                        title: res.error.message,
+                        type: 'warn'
+                    });
+                }
             }
         },
     },

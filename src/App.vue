@@ -3,6 +3,8 @@
         <navbar />
         <v-main>
             <router-view />
+            <notifications position="bottom right" class="b"/>
+            
         </v-main>
     </v-app>
 </template>
